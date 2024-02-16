@@ -1,5 +1,98 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    font-family: 'Montserrat',sans-serif;
+    background: #F0F0F0;
+}
+
+p {
+    margin-bottom: 0;
+}
+
 main > .container {
     padding: 70px 15px 20px;
+}
+
+.custom-breadcrumb a {
+    color: #000;
+    text-decoration: none;
+}
+
+.login-container {
+    border: 1px solid #C8CAD7;
+    background: #FFFFFF;
+    border-radius: 9px;
+    padding: 30px 40px;
+}
+
+.course-container {
+    border: 1px solid #C8CAD7;
+    background: #FFFFFF;
+    border-radius: 9px;
+}
+
+
+.course-title h1 {
+    font-weight: 600;
+    line-height: 43px;
+}
+
+.course-img {
+    background: url('/img/course-preview.jpg') no-repeat center center;
+    background-size: cover;
+    height: 200px;
+    border-radius: 6px;
+}
+
+.course-body {
+    padding: 20px;
+}
+
+.list-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 22px;
+}
+
+.lesson-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid #C8CAD7 !important;
+    box-shadow: none !important;
+    height: 46px;
+    border-radius: 8px;
+    font-weight: 500;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555555;
+    background-color: #fff;
+    background-image: none;
+    margin: 10px 0;
+    text-decoration: none;
+}
+
+.lesson-status {
+    padding: 0 15px;
+}
+
+.lesson-title {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.lesson-actions {
+    margin-top: 20px;
+}
+
+.lesson-container {
+    margin-top: 5px;
+    padding: 20px;
+    border: 1px solid #C8CAD7;
+    background: #FFFFFF;
+    border-radius: 9px;
 }
 
 .footer {

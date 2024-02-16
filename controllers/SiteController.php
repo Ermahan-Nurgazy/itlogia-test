@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Lesson;
+use app\models\LessonComplete;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -19,18 +21,21 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
+                'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'allow' => true,
+                        'actions' => ['login'],
+                        'roles' => ['?'],
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -61,7 +66,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $lessons = Lesson::find()->all();
+
+        $courseComplete = true;
+        foreach ($lessons as $lesson) {
+            if (!$lesson->result->is_read)
+                $courseComplete = false;
+        }
+        return $this->render('index',compact('lessons','courseComplete'));
     }
 
     /**
@@ -86,6 +98,29 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionView($id)
+    {
+        $lesson = Lesson::findOne($id);
+        $firstLesson = Lesson::find()->orderBy(['id' => SORT_ASC])->one();
+        $lastLesson = Lesson::find()->orderBy(['id' => SORT_DESC])->one();
+
+        return $this->render('view', compact('lesson','firstLesson','lastLesson'));
+    }
+
+    public function actionLessonRead($id)
+    {
+        $lessonComplete = LessonComplete::find()
+            ->andWhere(['lesson_id' => $id])
+            ->andWhere(['user_id' => Yii::$app->user->identity->id])
+            ->one();
+        $lessonComplete->is_read = Yii::$app->request->post('lesson_complete');
+
+        if ($lessonComplete->save())
+            return $this->redirect(['/site/view', 'id' => $id]);
+
+        return false;
+    }
+
     /**
      * Logout action.
      *
@@ -96,33 +131,5 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }
